@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Tech Giant</title>
+    <link rel="stylesheet" href="tech.css">
+</head>
+<body>
+    <h1> Global tech conmmunity Event registration</h1>
+   
+    <main class="container">
+        <div class="event-registration">
+            <h2>Register for Global Tech Connect Community Event</h2>
+            <form action="/submit_registration" method="post">
+                <div class="form-group">
+                    <label for="fullName"> <span class="required-star">*</span> Full Name:</label>
+                    <input type="text" id="fullName" name="fullName" minlength="6" maxlength="100" required>
+                    <div class="error-message" id="nameError"></div>
+                </div>
+                <div claass="form-group">
+                    <label for="email"><span style="color:red">*</span> Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="error-message" id="emailError"></div>
+                </div>
+                 <div class ="form-group">
+                    <label for="comapny">Comapany/institution</label>
+                    <input type = "company" id="company" name="company " >
+
+                 </div>
+                    <div class="form-group">
+                    <label><span style ="color:red">*</span> Attendance Type:</label>
+                    <div class="radio-group">
+                        <input type="radio" id="virtual" name="attendanceType" value="Virtual" required>
+                        <label for="virtual">Virtual</label>
+
+                        <input type="radio" id="inPerson" name="attendanceType" value="In-Person" required>
+                        <label for="inPerson">In-Person</label>
+                    </div>
+                    <div class="error-message" id="attendanceError">Please select your attendance type.</div>
+                </div>
+                <button type="submit">Submit Registration</button>
+            </form>
+             <button id="analyticsButton">Show Event Analytics</button>
+
+            <div id="analytics">
+                <h3>Event Registration Analytics are shown below</h3>
+                <p><strong>Total Number of Registrants:</strong> <span id="totalRegistrants">0</span></p>
+                <h4>Attendance Breakdown:</h4>
+                <ul>
+                    <li>Virtual: <span id="virtualCount">0</span></li>
+                    <li>In-Person: <span id="inPersonCount">0</span></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+   <script src="tech.js"></script>
+</body>
+</html>
