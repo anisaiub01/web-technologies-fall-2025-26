@@ -1,4 +1,4 @@
-/* GENERAL RESET */
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -7,7 +7,6 @@ body {
     background-color: #ffffff;
 }
 
-/* NAVIGATION */
 nav {
     background-color: #2d5a27;
     padding: 15px 5%;
@@ -46,7 +45,6 @@ nav {
     color: #f4b400 !important;
 }
 
-/* HERO SECTION */
 .hero {
     background-color: #f1f8f1;
     padding: 80px 20px;
@@ -70,7 +68,7 @@ nav {
     margin-top: 15px;
 }
 
-/* FEATURES SECTION */
+
 .features {
     display: flex;
     justify-content: center;
@@ -85,7 +83,7 @@ nav {
     text-align: center;
 }
 
-/* CATEGORY GRID */
+
 .categories {
     padding: 40px 5%;
     text-align: center;
@@ -116,7 +114,6 @@ nav {
     color: #2d5a27;
 }
 
-/* FOOTER */
 footer {
     background-color: #222;
     color: #ccc;
