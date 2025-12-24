@@ -27,7 +27,7 @@ function validateEmail(){
 
 function validateAttendance(){
     const attendance = AttendenceText.value;
-    const errorElement = document.getElementById('attendance-error');
+    const errorElement = document.getElementById('error');
     if(attendance === ''){
         errorElement.textContent = 'Please select your attendance status.';
         return false;
