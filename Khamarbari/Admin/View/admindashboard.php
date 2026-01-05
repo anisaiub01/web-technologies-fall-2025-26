@@ -41,7 +41,9 @@ $controller = new AdminController();
         <li><a href="?section=payments" class="<?php echo ($section==='payments')?'active':''; ?>"><i class="fa fa-wallet"></i> Payments</a></li>
         <li><a href="?section=reviews" class="<?php echo ($section==='reviews')?'active':''; ?>"><i class="fa fa-comments"></i> Reviews</a></li>
         <li><a href="?section=queries" class="<?php echo ($section==='queries')?'active':''; ?>"><i class="fa fa-question-circle"></i> Queries</a></li>
-        <li><a href="?section=admins" class="<?php echo ($section==='admins')?'active':''; ?>"><i class="fa fa-user-shield"></i> Admins</a></li>
+       <li><a href="?section=admins" class="<?php echo ($section==='admins')?'active':''; ?>"><i class="fa fa-user-shield"></i> Admins</a></li> 
+
+
 
       </ul>
     </aside>
@@ -50,6 +52,7 @@ $controller = new AdminController();
       <?php
 
         $controller->loadSection($section);
+            $controller->handleActions();
       ?>
     </section>
   </main>

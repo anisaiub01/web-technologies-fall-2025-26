@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once "./Model/db.php";
-require_once "./Model/UserModel.php";
+require_once __DIR__ . "/../Model/db.php";
+require_once __DIR__ . "/../Model/UserModel.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $userId   = trim($_POST['userId'] ?? '');
