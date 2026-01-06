@@ -1,5 +1,5 @@
 <?php
-require_once 'models/Inventory.php';
+require_once 'Model/Inventory.php';
 
 class InventoryController {
 
