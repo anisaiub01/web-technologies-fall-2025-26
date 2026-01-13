@@ -50,9 +50,9 @@ $controller = new AdminController();
 
     <section class="content-area">
       <?php
-
+     $controller->handleActions();
         $controller->loadSection($section);
-            $controller->handleActions();
+       
       ?>
     </section>
   </main>

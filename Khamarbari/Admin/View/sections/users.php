@@ -7,7 +7,6 @@
       <option value="All">All</option>
       <option value="Farmer">Farmer</option>
       <option value="Consumer">Consumer</option>
-      <option value="Admin">Admin</option>
     </select>
     <input type="hidden" name="action" value="search_user">
     <input type="text" name="keyword" placeholder="Search users...">
@@ -24,7 +23,7 @@
         <td><?php echo $u['user_id']; ?></td>
         <td><?php echo htmlspecialchars($u['name']); ?></td>
         <td><?php echo htmlspecialchars($u['email']); ?></td>
-        <td><?php echo $u['user_type']; ?></td>
+      <td><?php echo $u['user_type']; ?></td>  
         <td><?php echo htmlspecialchars($u['phone']); ?></td>
         <td><?php echo htmlspecialchars($u['address']); ?></td>
         <td>
