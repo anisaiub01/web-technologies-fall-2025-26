@@ -78,7 +78,16 @@ class UserModel {
         while($r = mysqli_fetch_assoc($result)) $rows[] = $r;
         return $rows;
     }
-
+    public function getAllFarmers() {
+    $sql = "SELECT user_id, name, email FROM Users WHERE user_type = 'Farmer' ORDER BY name ASC";
+    $result = mysqli_query($this->conn, $sql);
+    
+    $farmers = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $farmers[] = $row;
+    }
+    return $farmers;
+}
     public function searchUsers($userType = '', $keyword = '') {
         $sql = "SELECT * FROM Users WHERE 1=1";
         $params = [];

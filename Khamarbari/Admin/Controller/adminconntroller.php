@@ -2,17 +2,21 @@
 require_once __DIR__ . "/../Model/db.php";
 require_once __DIR__ . "/../Model/UserModel.php";
 require_once __DIR__ . "/../Model/AdminModel.php";
+require_once __DIR__ . "/../Model/ProductModel.php";
 
 class AdminController {
     private $conn;
     private $userModel;
     private $adminModel;
+    private $productModel;
+
 
     public function __construct() {
         global $conn;
         $this->conn = $conn;
         $this->userModel = new UserModel($this->conn);
         $this->adminModel = new AdminModel($this->conn);
+        $this->productModel = new ProductModel($this->conn);
     }
 
     public function handleActions() {
@@ -75,6 +79,85 @@ class AdminController {
             header("Location: admindashboard.php?section=users&success=updated");
             exit;
         }
+
+        // --- Product search (GET) ---
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'search_product') {
+            $category = $_GET['category'] ?? '';
+            $keyword = $_GET['keyword'] ?? '';
+            $products = $this->productModel->searchProductsAdmin($category, $keyword);
+            include __DIR__ . "/../View/sections/products.php";
+            exit;
+        }
+
+        // --- Add Product (POST) ---
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_product') {
+            $name = trim($_POST['name']);
+            $category = $_POST['category'];
+            $farmerId = $_POST['farmer_id'];
+            $price = floatval($_POST['price']);
+            $stock = intval($_POST['stock']);
+            $description = trim($_POST['description'] ?? '');
+            
+            // Handle image upload
+            $imagePath = null;
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
+                $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                $filename = $_FILES['image']['name'];
+                $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                
+                if (in_array($ext, $allowed)) {
+                    $newFilename = uniqid('product_', true) . '.' . $ext;
+                    $uploadDir = __DIR__ . '/../uploads/products/';
+                    
+                    // Create directory if it doesn't exist
+                    if (!file_exists($uploadDir)) {
+                        mkdir($uploadDir, 0777, true);
+                    }
+                    
+                    if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadDir . $newFilename)) {
+                        $imagePath = 'uploads/products/' . $newFilename;
+                    }
+                }
+            }
+            
+            // Generate product ID
+            $productId = $this->productModel->generateProductId();
+            
+            // Create product
+            $success = $this->productModel->createProduct(
+                $productId,
+                $farmerId,
+                $name,
+                $description,
+                $price,
+                $stock,
+                $imagePath,
+                $category
+            );
+            
+            if ($success) {
+                header("Location: admindashboard.php?section=products&success=added");
+            } else {
+                header("Location: admindashboard.php?section=products&error=add_failed");
+            }
+            exit;
+        }
+
+        // --- Delete Product ---
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_product') {
+            $this->productModel->deleteProduct($_POST['product_id']);
+            header("Location: admindashboard.php?section=products&success=deleted");
+            exit;
+        }
+
+        // --- Update Stock ---
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_stock') {
+            $productId = $_POST['product_id'];
+            $stock = intval($_POST['stock']);
+            $this->productModel->overrideStock($productId, $stock);
+            header("Location: admindashboard.php?section=products&success=stock_updated");
+            exit;
+        }
     }
 
     public function loadSection($section) {
@@ -96,6 +179,16 @@ class AdminController {
                 $admins = $this->adminModel->getAllAdmins();
                 include __DIR__ . "/../View/sections/admins.php";
                 break;
+
+        case 'products':
+             $category = $_GET['category'] ?? '';
+             $keyword = $_GET['keyword'] ?? '';
+             $products = $this->productModel->searchProductsAdmin($category, $keyword);
+    
+             $farmers = $this->userModel->getAllFarmers();
+    
+             include __DIR__ . "/../View/sections/products.php";
+              break;
 
             default:
                 echo "<p>Invalid Section</p>";
