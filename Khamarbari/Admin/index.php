@@ -16,7 +16,7 @@
     <nav>
         <a href="#">Buy</a>
         <a href="View/about.php">About</a>
-        <a href="#">Contact</a>
+        <a href="View/contact.php">Contact</a>
         <a href="View/register.php">Register</a>
     </nav>
 </header>
