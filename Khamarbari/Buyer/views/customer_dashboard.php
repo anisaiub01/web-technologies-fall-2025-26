@@ -1,4 +1,4 @@
-
+<?php require_once '../Controllers/customer_controller.php'; ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +11,8 @@
         <h1>Welcome customer ! Choose your desire Products...</h1>
 
         <div class="search-section">
-            <input type="text" id="searchBox" onkeyup="searchProduct()" placeholder="Search products...">
+            <input type="text" id="searchBox" onkeyup="searchProduct()" 
+                   placeholder="Search products..." value="<?= $lastSearch ?>">
             <div id="searchFeedback"></div>
         </div>
 
