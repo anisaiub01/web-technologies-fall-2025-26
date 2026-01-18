@@ -3,14 +3,18 @@
 <head>
     <title>Owner Inventory</title>
     
-    <link rel="stylesheet" href="/public/style.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/public/style.css">
+
+
 </head>
 <body>
 
 <div class="topbar">
     <h2 class="upper_db">Owner – Dashboard</h2>
-    <a class="orders-btn" href="seller/order">Orders</a>
+    <a class="orders-btn" href="<?php echo BASE_URL; ?>/main.php?page=order">Orders</a>
+
 </div>
+
 
 <div class="shop">
 <?php foreach ($data['catalog'] as $p): ?>
