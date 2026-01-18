@@ -2,11 +2,15 @@
 <html>
 <head>
     <title>Owner Inventory</title>
-    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="/public/style.css">
 </head>
 <body>
 
-<h2 class="upper_db">Owner – Dashboard</h2>
+<div class="topbar">
+    <h2 class="upper_db">Owner – Dashboard</h2>
+    <a class="orders-btn" href="seller/order">Orders</a>
+</div>
 
 <div class="shop">
 <?php foreach ($data['catalog'] as $p): ?>
