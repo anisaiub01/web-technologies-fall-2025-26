@@ -10,7 +10,8 @@
 
 <div class="topbar">
     <h2 class="upper_db">Orders</h2>
-    <a class="orders-btn" href="seller/shop">Back</a>
+    <a class="orders-btn" href="<?php echo BASE_URL; ?>/main.php?page=shop">Back</a>
+
 </div>
 
 <?php
