@@ -45,11 +45,28 @@
 <?php else: ?>
     <?php foreach ($data['inventory'] as $i): ?>
         <div class="inv-item">
-            <img src="<?php echo $i['image']; ?>">
-            <p><?php echo $i['name']; ?></p>
-            <p>৳ <?php echo $i['price']; ?></p>
-            <p>Qty: <?php echo $i['qty']; ?></p>
-        </div>
+    <img src="<?php echo $i['image']; ?>">
+    <p><?php echo $i['name']; ?></p>
+
+    <!-- UPDATE -->
+    <form method="post" action="<?php echo BASE_URL; ?>/main.php?page=updateProduct">
+        <input type="hidden" name="product_id" value="<?php echo $i['product_id']; ?>">
+
+        <input type="number" name="price" value="<?php echo $i['price']; ?>" required>
+        <input type="number" name="stock" value="<?php echo $i['stock']; ?>" required>
+
+        <button type="submit">Update</button>
+    </form>
+
+    <!-- DELETE -->
+    <form method="post"
+          action="<?php echo BASE_URL; ?>/main.php?page=deleteProduct"
+          onsubmit="return confirm('Delete this product?');">
+        <input type="hidden" name="product_id" value="<?php echo $i['product_id']; ?>">
+        <button type="submit">Delete</button>
+    </form>
+</div>
+
     <?php endforeach; ?>
 <?php endif; ?>
 </div>

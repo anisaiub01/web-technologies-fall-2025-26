@@ -62,4 +62,53 @@ public function orderAction()
     exit;
 }
 
+// ===== PRODUCT MANAGEMENT ACTIONS =====
+
+public function updateProductAction() {
+    Inventory::updateProduct(
+        $_SESSION['user_id'],
+        $_POST['product_id'],
+        $_POST['price'],
+        $_POST['stock']
+    );
+    header("Location: main.php?page=shop");
+    exit;
+}
+
+public function deleteProductAction() {
+    Inventory::deleteProduct(
+        $_SESSION['user_id'],
+        $_POST['product_id']
+    );
+    header("Location: main.php?page=shop");
+    exit;
+}
+public function orders() {
+
+    // TEMP data to match View/order.php keys exactly
+    $orders = [
+        [
+            "order_id" => "ORD001",
+            "customer_name" => "Buyer One",
+            "status" => "Pending",
+            "items" => [
+                ["product" => "Fresh Beef", "qty" => 2, "price" => 600],
+                ["product" => "Mango", "qty" => 1, "price" => 200]
+            ]
+        ],
+        [
+            "order_id" => "ORD002",
+            "customer_name" => "Buyer Two",
+            "status" => "Confirmed",
+            "items" => [
+                ["product" => "Gur", "qty" => 3, "price" => 150]
+            ]
+        ]
+    ];
+
+    return ["orders" => $orders];
+}
+
+
+
 }
