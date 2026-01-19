@@ -1,22 +1,16 @@
 <?php
+session_start();
 require_once '../Models/config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_cart'])) {
-    if (isset($_POST['selected_products']) && !empty($_POST['selected_products'])) {
-        foreach ($_POST['selected_products'] as $pName) {
-            $key = str_replace(' ', '_', $pName);
-            $qty = $_POST['qty_' . $key];
-            $prc = $_POST['price_' . $key];
-
-            if (is_numeric($qty) && $qty > 0) {
-                addToCart(1, $pName, $qty, $prc); 
+    if (!empty($_POST['selected_products'])) {
+        foreach ($_POST['selected_products'] as $productId) {
+            $qty = $_POST['qty_' . $productId];
+            if ($qty > 0) { 
+                addToCart($_SESSION['user_id'], $productId, $qty); 
             }
         }
-        // Properly terminated with semicolon to avoid parse errors
-        echo "<script>
-                alert('your products are added in the cart!!');
-                window.location.href = '../views/customer_dashboard.php';
-              </script>";
+        echo "<script>alert('Products added to your cart!'); window.location.href='../views/customer_dashboard.php';</script>";
         exit();
     }
 }
