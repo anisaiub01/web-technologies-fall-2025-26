@@ -1,6 +1,6 @@
 <?php
 require_once 'db_Connect.php';
-
+-
 function getAllProducts() {
     global $conn;
     $query = "SELECT * FROM products";
