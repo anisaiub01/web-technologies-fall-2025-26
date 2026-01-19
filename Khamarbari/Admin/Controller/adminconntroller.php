@@ -3,12 +3,16 @@ require_once __DIR__ . "/../Model/db.php";
 require_once __DIR__ . "/../Model/UserModel.php";
 require_once __DIR__ . "/../Model/AdminModel.php";
 require_once __DIR__ . "/../Model/ProductModel.php";
+require_once __DIR__ . "/../Model/OrderModel.php";
+
 
 class AdminController {
     private $conn;
     private $userModel;
     private $adminModel;
     private $productModel;
+    private $orderModel;
+
 
 
     public function __construct() {
@@ -17,6 +21,7 @@ class AdminController {
         $this->userModel = new UserModel($this->conn);
         $this->adminModel = new AdminModel($this->conn);
         $this->productModel = new ProductModel($this->conn);
+        $this->orderModel = new OrderModel($this->conn);
     }
 
     public function handleActions() {
@@ -158,6 +163,19 @@ class AdminController {
             header("Location: admindashboard.php?section=products&success=stock_updated");
             exit;
         }
+
+          // --- Orders management ---
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_order_status') {
+            $orderId = $_POST['order_id'];
+            $status = $_POST['status'];
+            $this->orderModel->updateOrderStatus($orderId, $status);
+            header("Location: admindashboard.php?section=orders");
+            exit;
+        }
+
+    
+
+
     }
 
     public function loadSection($section) {
@@ -178,6 +196,11 @@ class AdminController {
             case 'admins':
                 $admins = $this->adminModel->getAllAdmins();
                 include __DIR__ . "/../View/sections/admins.php";
+                break;
+
+           case 'orders':
+                $orders = $this->orderModel->getAllOrders();
+                include __DIR__ . "/../View/sections/orders.php";
                 break;
 
         case 'products':
