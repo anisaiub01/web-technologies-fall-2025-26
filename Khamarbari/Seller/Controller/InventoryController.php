@@ -28,4 +28,38 @@ class InventoryController {
             "inventory" => Inventory::all()
         ];
     }
+    public function order()
+{
+   
+    $orders = [
+        [
+            'id' => 1,
+            'customer_name' => 'Rahim',
+            'status' => 'Pending',
+            'items' => [
+                ['name' => 'Rice', 'qty' => 2],
+                ['name' => 'Potato', 'qty' => 5],
+            ]
+        ]
+    ];
+
+    $data = ['orders' => $orders];
+    require_once "View/order.php";
+}
+
+public function orderAction()
+{
+    $orderId = $_POST['order_id'] ?? null;
+    $action  = $_POST['action'] ?? null;
+
+    if ($orderId && $action === 'accept') {
+        
+    } elseif ($orderId && $action === 'reject') {
+       
+    }
+
+    header("Location: seller/order");
+    exit;
+}
+
 }

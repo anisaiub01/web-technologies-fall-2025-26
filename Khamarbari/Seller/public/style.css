@@ -42,3 +42,20 @@ body {
     margin: auto;
     padding: 30px;
 }
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.orders-btn{
+  padding:10px 16px;
+  background:#2d6cdf;
+  color:#fff;
+  text-decoration:none;
+  border-radius:8px;
+}
+.order-card{background:#fff;border:1px solid #ddd;border-radius:10px;padding:15px;margin:15px;}
+
+
