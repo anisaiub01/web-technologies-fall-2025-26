@@ -58,7 +58,7 @@
                 <input type="password" id="password" name="password" class="login-inp" placeholder=""><br>
                 <span id="passwordError" class="error"></span>
                 
-                <a href="forgot_password.php" class="forgotPassBtn">Forgot Password?</a>
+              
                 
                 <button type="submit" class="login-btn">LOG IN</button> 
             </form>
