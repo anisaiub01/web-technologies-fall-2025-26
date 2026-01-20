@@ -6,6 +6,7 @@ require_once __DIR__ . "/../Model/AdminModel.php";
 require_once __DIR__ . "/../Model/ProductModel.php";
 require_once __DIR__ . "/../Model/OrderModel.php";
 require_once __DIR__ . "/../Model/PaymentModel.php";
+require_once __DIR__ . "/../Model/ReviewModel.php";
 
 
 
@@ -16,6 +17,7 @@ class AdminController {
     private $productModel;
     private $orderModel;
     private $paymentModel;
+    private $reviewModel;
  
 
     public function __construct() {
@@ -26,6 +28,7 @@ class AdminController {
         $this->productModel = new ProductModel($this->conn);
         $this->orderModel = new OrderModel($this->conn);
         $this->paymentModel = new PaymentModel($this->conn);
+        $this->reviewModel = new ReviewModel($this->conn);
    
     }
 
@@ -198,7 +201,12 @@ class AdminController {
             include __DIR__ . "/../View/sections/payments.php";
             exit;
         }
-        
+          // --- Reviews ---
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_review') {
+            $this->reviewModel->deleteReview($_POST['review_id']);
+            header("Location: admindashboard.php?section=reviews");
+            exit;
+        }
      
         
     }
@@ -246,10 +254,14 @@ class AdminController {
                 $farmers = $this->userModel->getAllFarmers();
                 include __DIR__ . "/../View/sections/products.php";
                 break;
-                
+
                case 'payments':
                 $payments = $this->paymentModel->getAllPayments();
                 include __DIR__ . "/../View/sections/payments.php";
+                break;
+                 case 'reviews':
+                $reviews = $this->reviewModel->getAllReviews();
+                include __DIR__ . "/../View/sections/reviews.php";
                 break;
    
             default:
