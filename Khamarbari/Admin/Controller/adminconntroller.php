@@ -1,9 +1,11 @@
 <?php
+
 require_once __DIR__ . "/../Model/db.php";
 require_once __DIR__ . "/../Model/UserModel.php";
 require_once __DIR__ . "/../Model/AdminModel.php";
 require_once __DIR__ . "/../Model/ProductModel.php";
 require_once __DIR__ . "/../Model/OrderModel.php";
+
 
 
 class AdminController {
@@ -12,8 +14,7 @@ class AdminController {
     private $adminModel;
     private $productModel;
     private $orderModel;
-
-
+ 
 
     public function __construct() {
         global $conn;
@@ -22,15 +23,10 @@ class AdminController {
         $this->adminModel = new AdminModel($this->conn);
         $this->productModel = new ProductModel($this->conn);
         $this->orderModel = new OrderModel($this->conn);
+   
     }
 
     public function handleActions() {
-        // --- User search (GET) ---
-        if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'search_user') {
-            // Don't exit here, just return - let loadSection handle the display
-            return;
-        }
-          
         // --- Add admin (POST) ---
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_admin') {
             $name = $_POST['name'];
@@ -50,17 +46,36 @@ class AdminController {
         // --- Delete Admin ---
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_admin') {
             $adminId = $_POST['admin_id'];
-            $superPass = $_POST['super_pass'];
-            $result = $this->adminModel->deleteAdmin($adminId, $superPass);
+
+            $result = $this->adminModel->deleteAdmin($adminId);
 
             if ($result === true) {
                 header("Location: admindashboard.php?section=admins&success=delete");
-            } elseif ($result === "wrong_super_pass") {
-                header("Location: admindashboard.php?section=admins&error=wrong_super_pass");
             } elseif ($result === "last_admin") {
                 header("Location: admindashboard.php?section=admins&error=last_admin");
+            } elseif ($result === "cannot_delete_self") {
+                header("Location: admindashboard.php?section=admins&error=self_delete");
             } else {
                 header("Location: admindashboard.php?section=admins&error=delete_fail");
+            }
+            exit;
+        }
+
+        // --- Update Admin ---
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_admin') {
+            $adminId = $_POST['admin_id'];
+            $name = $_POST['name'];
+            $email = $_POST['email'];
+            $password = !empty($_POST['password']) ? $_POST['password'] : null;
+
+            $result = $this->adminModel->updateAdmin($adminId, $name, $email, $password);
+
+            if ($result === true) {
+                header("Location: admindashboard.php?section=admins&success=update");
+            } elseif ($result === "email_exists") {
+                header("Location: admindashboard.php?section=admins&error=email_exists_update");
+            } else {
+                header("Location: admindashboard.php?section=admins&error=update_fail");
             }
             exit;
         }
@@ -164,7 +179,7 @@ class AdminController {
             exit;
         }
 
-          // --- Orders management ---
+        // --- Orders management ---
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_order_status') {
             $orderId = $_POST['order_id'];
             $status = $_POST['status'];
@@ -172,10 +187,9 @@ class AdminController {
             header("Location: admindashboard.php?section=orders");
             exit;
         }
-
-    
-
-
+        
+     
+        
     }
 
     public function loadSection($section) {
@@ -198,21 +212,31 @@ class AdminController {
                 include __DIR__ . "/../View/sections/admins.php";
                 break;
 
-           case 'orders':
-                $orders = $this->orderModel->getAllOrders();
-                include __DIR__ . "/../View/sections/orders.php";
+           // Update the 'orders' case in the loadSection() method:
+
+            case 'orders':
+            // order ID
+           if (isset($_GET['action']) && $_GET['action'] === 'search_order' && isset($_GET['order_id']) && !empty($_GET['order_id'])) {
+            $orderId = $_GET['order_id'];
+             $orders = $this->orderModel->searchOrderById($orderId);
+             } else {
+            // Show all orders
+             $orders = $this->orderModel->getAllOrders();
+             }
+    
+             include __DIR__ . "/../View/sections/orders.php";
+              break;
+                
+
+            case 'products':
+                $category = $_GET['category'] ?? '';
+                $keyword = $_GET['keyword'] ?? '';
+                $products = $this->productModel->searchProductsAdmin($category, $keyword);
+                $farmers = $this->userModel->getAllFarmers();
+                include __DIR__ . "/../View/sections/products.php";
                 break;
 
-        case 'products':
-             $category = $_GET['category'] ?? '';
-             $keyword = $_GET['keyword'] ?? '';
-             $products = $this->productModel->searchProductsAdmin($category, $keyword);
-    
-             $farmers = $this->userModel->getAllFarmers();
-    
-             include __DIR__ . "/../View/sections/products.php";
-              break;
-
+   
             default:
                 echo "<p>Invalid Section</p>";
         }

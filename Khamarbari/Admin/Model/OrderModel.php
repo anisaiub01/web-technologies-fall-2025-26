@@ -5,7 +5,6 @@ class OrderModel {
         $this->conn = $conn;
     }
 
-
     public function getOrdersByUser($userId) {
         $sql = "SELECT * FROM Orders WHERE user_id=? ORDER BY order_date DESC";
         $stmt = mysqli_prepare($this->conn, $sql);
@@ -19,7 +18,6 @@ class OrderModel {
         }
         return $orders;
     }
-
 
     public function getOrderItems($orderId) {
         $sql = "SELECT oi.*, p.name AS product_name
@@ -45,7 +43,6 @@ class OrderModel {
         return mysqli_stmt_execute($stmt);
     }
 
-  
     public function getAllOrders() {
         $sql = "SELECT o.*, u.name AS customer_name 
                 FROM Orders o 
@@ -57,9 +54,23 @@ class OrderModel {
         return $rows;
     }
 
-
-
-
-
+    // Search orders 
+    public function searchOrderById($orderId) {
+        $sql = "SELECT o.*, u.name AS customer_name 
+                FROM Orders o 
+                JOIN Users u ON o.user_id = u.user_id
+                WHERE o.order_id = ?
+                ORDER BY o.order_date DESC";
+        $stmt = mysqli_prepare($this->conn, $sql);
+        mysqli_stmt_bind_param($stmt, "s", $orderId);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        
+        $orders = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $orders[] = $row;
+        }
+        return $orders;
+    }
 }
 ?>

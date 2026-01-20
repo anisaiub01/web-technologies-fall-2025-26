@@ -1,16 +1,16 @@
-<h2 class="section-title">Orders & Carts</h2>
+<h2 class="section-title">Orders</h2>
 
 <div class="controls">
   <form method="GET" action="admindashboard.php" class="search-form">
     <input type="hidden" name="section" value="orders">
-    <input type="text" name="user_id" placeholder="Enter user id to view cart" value="<?php echo htmlspecialchars($_GET['user_id'] ?? ''); ?>">
-    <input type="hidden" name="action" value="view_cart">
-    <button type="submit">View Cart</button>
+    <input type="text" name="order_id" placeholder="Enter Order ID to search" value="<?php echo htmlspecialchars($_GET['order_id'] ?? ''); ?>">
+    <input type="hidden" name="action" value="search_order">
+    <button type="submit">Search Order</button>
   </form>
 </div>
 
 <?php if(!empty($orders)): ?>
-<h3>Order History</h3>
+<h3>Order History<?php if(isset($_GET['order_id']) && !empty($_GET['order_id'])): ?> - Search Result for Order ID: <?php echo htmlspecialchars($_GET['order_id']); ?><?php endif; ?></h3>
 <div class="table-container">
   <table class="order-table">
     <thead>
@@ -61,50 +61,5 @@
   </table>
 </div>
 <?php else: ?>
-<p>No order history found.</p>
-<?php endif; ?>
-
-<?php if(isset($cart)): ?>
-<h3>User Cart</h3>
-<div class="cart-container table-container">
-  <table class="cart-table">
-    <thead>
-      <tr class="cart-header-row">
-        <th class="cart-col-id">Cart ID</th>
-        <th class="cart-col-product">Product</th>
-        <th class="cart-col-qty">Qty</th>
-        <th class="cart-col-date">Added At</th>
-        <th class="cart-col-actions">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php if(!empty($cart)): foreach($cart as $c): ?>
-        <tr class="cart-row">
-          <td class="cart-id"><?php echo $c['cart_id']; ?></td>
-          <td class="cart-product"><?php echo htmlspecialchars($c['product_name']); ?></td>
-          <td class="cart-quantity">
-            <form method="POST" action="adminDashboard.php?section=orders" class="cart-qty-form">
-              <input type="hidden" name="action" value="update_cart">
-              <input type="hidden" name="cart_id" value="<?php echo $c['cart_id']; ?>">
-              <input type="number" name="quantity" value="<?php echo $c['quantity']; ?>" min="1" class="cart-qty-input">
-              <button type="submit" class="cart-btn update-btn">Update</button>
-            </form>
-          </td>
-          <td class="cart-date"><?php echo $c['added_at']; ?></td>
-          <td class="cart-actions">
-            <form method="POST" action="adminDashboard.php?section=orders" onsubmit="return confirm('Delete this cart item?');" class="cart-delete-form">
-              <input type="hidden" name="action" value="delete_cart">
-              <input type="hidden" name="cart_id" value="<?php echo $c['cart_id']; ?>">
-              <button type="submit" class="cart-btn delete-btn">Delete</button>
-            </form>
-          </td>
-        </tr>
-      <?php endforeach; else: ?>
-        <tr class="cart-row">
-          <td colspan="5" class="no-cart-data">No cart items found for this user</td>
-        </tr>
-      <?php endif; ?>
-    </tbody>
-  </table>
-</div>
+<p>No orders found<?php if(isset($_GET['order_id']) && !empty($_GET['order_id'])): ?> for Order ID: <?php echo htmlspecialchars($_GET['order_id']); ?><?php endif; ?>.</p>
 <?php endif; ?>
