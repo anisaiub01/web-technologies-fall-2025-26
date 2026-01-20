@@ -20,7 +20,9 @@
 
     <div class="topbar-right">
         <a class="orders-btn" href="<?php echo BASE_URL; ?>/main.php?page=order">Orders</a>
+        <a class="orders-btn" href="<?php echo BASE_URL; ?>/main.php?page=payment">Payments</a>
         <a class="orders-btn logout-btn" href="<?php echo BASE_URL; ?>/logout.php">Logout</a>
+        
     </div>
 </div>
 

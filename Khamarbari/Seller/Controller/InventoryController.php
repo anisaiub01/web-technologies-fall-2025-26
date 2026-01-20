@@ -66,20 +66,22 @@ class InventoryController {
     }
 
     public function orderAction() {
-        $farmerId = $this->getFarmerId();
+    $farmerId = $this->getFarmerId();
 
-        $orderId = $_POST['order_id'] ?? null;
-        $action  = $_POST['action'] ?? null;
+    $orderId = $_POST['order_id'] ?? null;
+    $action  = $_POST['action'] ?? null;
 
-        if ($orderId && $action === 'accept') {
-            Inventory::updateOrderStatusForSeller($orderId, $farmerId, "confirmed");
-        } elseif ($orderId && $action === 'reject') {
-            Inventory::updateOrderStatusForSeller($orderId, $farmerId, "cancelled");
-        }
-
-        header("Location: main.php?page=order");
-        exit;
+    if ($orderId && $action === 'accept') {
+        // ✅ delivered + payment created (PMxxx, method, amount, pending)
+        Inventory::markOrderDeliveredAndPaid($orderId, $farmerId);
+    } elseif ($orderId && $action === 'reject') {
+        Inventory::updateOrderStatusForSeller($orderId, $farmerId, "cancelled");
     }
+
+    header("Location: main.php?page=order");
+    exit;
+}
+
 
     public function updateProductAction() {
         $farmerId = $this->getFarmerId();
@@ -110,4 +112,22 @@ class InventoryController {
         $orders = Inventory::getSellerOrdersForView($farmerId);
         return ["orders" => $orders];
     }
+    public function payments() {
+    $farmerId = $this->getFarmerId();
+    $payments = Inventory::getSellerPayments($farmerId);
+    return ['payments' => $payments];
+}
+
+public function updatePaymentStatusAction() {
+    $paymentId = $_POST['payment_id'] ?? null;
+    $status    = $_POST['status'] ?? null;
+
+    if ($paymentId && $status) {
+        Inventory::updatePaymentStatus($paymentId, $status);
+    }
+
+    header("Location: main.php?page=payment");
+    exit;
+}
+
 }

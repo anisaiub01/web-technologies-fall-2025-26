@@ -44,6 +44,16 @@ if ($page === 'order') {
     require __DIR__ . '/View/order.php';
     exit;
 }
+if ($page === 'payment') {
+    $data = $controller->payments();
+    require __DIR__ . '/View/payment.php';
+    exit;
+}
+if ($page === 'updatePaymentStatus') {
+    $controller->updatePaymentStatusAction();
+    exit;
+}
+
 
 $data = $controller->handleRequest();
 require __DIR__ . '/View/shop.php';
