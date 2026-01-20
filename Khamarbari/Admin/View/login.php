@@ -32,7 +32,7 @@
         <div class="register-box">
 
             <h1>Login</h1>
-            <p>Welcome to Khamari! Please Login</p>
+            <p>Welcome to Khamarbari! Please Login</p>
 
             <form action="../Controller/logauth.php" method="post">
 <label for="userId">User ID</label><br>
