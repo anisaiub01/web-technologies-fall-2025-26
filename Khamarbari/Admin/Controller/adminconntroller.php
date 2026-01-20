@@ -5,6 +5,7 @@ require_once __DIR__ . "/../Model/UserModel.php";
 require_once __DIR__ . "/../Model/AdminModel.php";
 require_once __DIR__ . "/../Model/ProductModel.php";
 require_once __DIR__ . "/../Model/OrderModel.php";
+require_once __DIR__ . "/../Model/PaymentModel.php";
 
 
 
@@ -14,6 +15,7 @@ class AdminController {
     private $adminModel;
     private $productModel;
     private $orderModel;
+    private $paymentModel;
  
 
     public function __construct() {
@@ -23,6 +25,7 @@ class AdminController {
         $this->adminModel = new AdminModel($this->conn);
         $this->productModel = new ProductModel($this->conn);
         $this->orderModel = new OrderModel($this->conn);
+        $this->paymentModel = new PaymentModel($this->conn);
    
     }
 
@@ -187,6 +190,14 @@ class AdminController {
             header("Location: admindashboard.php?section=orders");
             exit;
         }
+
+            // --- Payments ---
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'search_payment') {
+            $method = $_GET['method'] ?? '';
+            $payments = $this->paymentModel->searchPaymentsByMethod($method);
+            include __DIR__ . "/../View/sections/payments.php";
+            exit;
+        }
         
      
         
@@ -235,7 +246,11 @@ class AdminController {
                 $farmers = $this->userModel->getAllFarmers();
                 include __DIR__ . "/../View/sections/products.php";
                 break;
-
+                
+               case 'payments':
+                $payments = $this->paymentModel->getAllPayments();
+                include __DIR__ . "/../View/sections/payments.php";
+                break;
    
             default:
                 echo "<p>Invalid Section</p>";
