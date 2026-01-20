@@ -58,4 +58,11 @@ body {
 }
 .order-card{background:#fff;border:1px solid #ddd;border-radius:10px;padding:15px;margin:15px;}
 
+.inv-table th { background: #f3f3f3; text-align: left; }
+.inv-table td, .inv-table th { vertical-align: middle; }
+.inv-table button { cursor: pointer; }
+.inv-table th { background: #f3f3f3; text-align: left; }
+.inv-table td, .inv-table th { vertical-align: top; }
+.inv-table button { cursor: pointer; padding: 6px 10px; }
+
 
