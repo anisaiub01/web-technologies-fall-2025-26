@@ -1,19 +1,55 @@
 <?php
 class Inventory {
 
+  
     private static function db() {
-        $pdo = new PDO("mysql:host=localhost;dbname=khamarbaridb", "root", "");
+        $pdo = new PDO("mysql:host=localhost;dbname=khamarbaridb;charset=utf8mb4", "root", "");
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $pdo;
     }
 
+    
+    public static function dbPublic() {
+        return self::db();
+    }
+
    
+    public static function getDefaultFarmerId(): ?string {
+        $db = self::db();
+        $stmt = $db->prepare("SELECT user_id FROM users WHERE user_type='Farmer' ORDER BY created_at ASC LIMIT 1");
+        $stmt->execute();
+        $id = $stmt->fetchColumn();
+        return $id ? (string)$id : null;
+    }
+
+    
+    public static function createDemoFarmer(): string {
+        $db = self::db();
+        $id = "FARMER001";
+
+       
+        $chk = $db->prepare("SELECT user_id FROM users WHERE user_id=? LIMIT 1");
+        $chk->execute([$id]);
+        if ($chk->fetchColumn()) return $id;
+
+        $name = "Demo Farmer";
+        $email = "farmer001@example.com";
+        $phone = "01700000000";
+        $password = password_hash("1234", PASSWORD_BCRYPT);
+        $user_type = "Farmer";
+        $address = "Demo Address";
+
+        $stmt = $db->prepare("INSERT INTO users (user_id,name,email,phone,password,user_type,address) VALUES (?,?,?,?,?,?,?)");
+        $stmt->execute([$id,$name,$email,$phone,$password,$user_type,$address]);
+
+        return $id;
+    }
+
     public static function addProduct($farmerId, $name, $image, $price, $stock) {
         $db = self::db();
 
         $productId = "PRD" . time() . rand(10,99);
-
-        $category = "grocery"; 
+        $category = "grocery";
         $description = null;
 
         $stmt = $db->prepare(
@@ -48,20 +84,26 @@ class Inventory {
     }
 
     
-
     public static function getSellerOrdersForView($farmerId) {
         $db = self::db();
 
-    
         $sql = "
-            SELECT o.order_id, o.user_id, o.status, o.order_date
+            SELECT 
+                o.order_id,
+                o.user_id,
+                o.status,
+                o.order_date,
+                u.name  AS customer_name,
+                u.phone AS customer_phone
             FROM orders o
             JOIN order_items oi ON oi.order_id = o.order_id
             JOIN products p ON p.product_id = oi.product_id
+            LEFT JOIN users u ON u.user_id = o.user_id
             WHERE p.farmer_id = ?
             GROUP BY o.order_id
             ORDER BY o.order_date DESC
         ";
+
         $stmt = $db->prepare($sql);
         $stmt->execute([$farmerId]);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -71,15 +113,7 @@ class Inventory {
         foreach ($rows as $r) {
             $orderId = $r['order_id'];
 
-           
-            $customerName = "Unknown";
-            if (!empty($r['user_id'])) {
-                $u = $db->prepare("SELECT name FROM users WHERE user_id=?");
-                $u->execute([$r['user_id']]);
-                $customerName = $u->fetchColumn() ?: "Unknown";
-            }
-
-          
+            
             $itemsSql = "
                 SELECT p.name, oi.quantity
                 FROM order_items oi
@@ -99,21 +133,22 @@ class Inventory {
             }
 
             $orders[] = [
-                "id"            => $orderId,
-                "customer_name" => $customerName,
-                "status"        => $r['status'] ?? "pending",
-                "items"         => $items
+                "id"             => $orderId,
+                "customer_name"  => $r['customer_name'] ?? "Unknown",
+                "customer_phone" => $r['customer_phone'] ?? "N/A",
+                "order_date"     => $r['order_date'] ?? null,
+                "status"         => $r['status'] ?? "pending",
+                "items"          => $items
             ];
         }
 
         return $orders;
     }
 
-  
+   
     public static function updateOrderStatusForSeller($orderId, $farmerId, $newStatus) {
         $db = self::db();
 
-      
         $sql = "
             UPDATE orders o
             JOIN order_items oi ON oi.order_id = o.order_id
@@ -124,5 +159,4 @@ class Inventory {
         $stmt = $db->prepare($sql);
         return $stmt->execute([$newStatus, $orderId, $farmerId]);
     }
-
 }
