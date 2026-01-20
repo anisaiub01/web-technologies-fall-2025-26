@@ -21,26 +21,31 @@
   </nav>
 </header>
 
-<main>
+<<main>
   <div class="contact-container">
     <h2>Contact Us</h2>
 
+    <?php if(isset($_SESSION['contact_success'])): ?>
+      <p class="success-msg"><?php echo $_SESSION['contact_success']; unset($_SESSION['contact_success']); ?></p>
+    <?php elseif(isset($_SESSION['contact_error'])): ?>
+      <p class="error-msg"><?php echo $_SESSION['contact_error']; unset($_SESSION['contact_error']); ?></p>
+    <?php endif; ?>
 
-    <form>
+    <form method="POST" action="../Controller/ContactController.php" class="contact-form">
       <label for="name">Your Name</label>
-      <input type="text" id="name" name="name" required placeholder="">
+      <input type="text" id="name" name="name" required placeholder="Enter your name">
 
       <label for="email">Your Email</label>
-      <input type="email" id="email" name="email" required placeholder="">
+      <input type="email" id="email" name="email" required placeholder="Enter your email">
 
       <label for="phone">Phone Number</label>
-      <input type="text" id="phone" name="phone" placeholder="">
+      <input type="text" id="phone" name="phone" placeholder="Optional">
 
       <label for="subject">Subject</label>
-      <input type="text" id="subject" name="subject" required placeholder="t">
+      <input type="text" id="subject" name="subject" required placeholder="Message subject">
 
       <label for="message">Message</label>
-      <textarea id="message" name="message" rows="5" required placeholder=""></textarea>
+      <textarea id="message" name="message" rows="5" required placeholder="Write your message..."></textarea>
 
       <button type="submit" class="contact-btn">Send Message</button>
     </form>
