@@ -1,33 +1,53 @@
 <?php
-require_once 'Model/Inventory.php';
+require_once __DIR__ . '/../Model/Inventory.php';
+
 
 class InventoryController {
 
     public function handleRequest() {
 
-        Inventory::init();
+    $catalog = [
+        ["name"=>"Fresh Beef","image"=>"images/beef.jpg"],
+        ["name"=>"Organic Mango","image"=>"images/mango.jpg"],
+        ["name"=>"Dragon Fruit","image"=>"images/dragon.jpg"],
+        ["name"=>"Jaggery (Gur)","image"=>"images/gur.jpg"]
+    ];
 
-        $catalog = [
-            ["name"=>"Fresh Beef","image"=>"images/beef.jpg"],
-            ["name"=>"Organic Mango","image"=>"images/mango.jpg"],
-            ["name"=>"Dragon Fruit","image"=>"images/dragon.jpg"],
-            ["name"=>"Jaggery (Gur)","image"=>"images/gur.jpg"]
-        ];
+ 
+    $farmerId = $_SESSION['user_id'] ?? null;
 
-        if (isset($_POST['add'])) {
-            Inventory::add([
-                "name"  => $_POST['name'],
-                "price" => $_POST['price'],
-                "qty"   => $_POST['qty'],
-                "image" => $_POST['image']
-            ]);
-        }
 
-        return [
-            "catalog"   => $catalog,
-            "inventory" => Inventory::all()
-        ];
+if (!$farmerId) {
+    $_SESSION['user_id'] = "FARMER001";
+    $farmerId = $_SESSION['user_id'];
+}
+
+
+   
+    if (isset($_POST['add'])) {
+
+        Inventory::addProduct(
+            $farmerId,
+            $_POST['name'],
+            $_POST['image'],
+            $_POST['price'],
+            $_POST['qty']
+        );
+
+        
+        header("Location: main.php?page=shop");
+        exit;
     }
+
+   
+    $inventory = Inventory::getFarmerProducts($farmerId);
+
+    return [
+        "catalog"   => $catalog,
+        "inventory" => $inventory
+    ];
+}
+
     public function order()
 {
    
@@ -52,17 +72,21 @@ public function orderAction()
     $orderId = $_POST['order_id'] ?? null;
     $action  = $_POST['action'] ?? null;
 
+    $sellerId = $_SESSION['user_id'] ?? "FARMER001";
+
     if ($orderId && $action === 'accept') {
-        
+        Inventory::updateOrderStatusForSeller($orderId, $sellerId, "confirmed");
     } elseif ($orderId && $action === 'reject') {
-       
+        Inventory::updateOrderStatusForSeller($orderId, $sellerId, "cancelled");
     }
 
-    header("Location: seller/order");
+    header("Location: main.php?page=order");
     exit;
 }
 
-// ===== PRODUCT MANAGEMENT ACTIONS =====
+
+
+
 
 public function updateProductAction() {
     Inventory::updateProduct(
@@ -85,29 +109,18 @@ public function deleteProductAction() {
 }
 public function orders() {
 
-    // TEMP data to match View/order.php keys exactly
-    $orders = [
-        [
-            "order_id" => "ORD001",
-            "customer_name" => "Buyer One",
-            "status" => "Pending",
-            "items" => [
-                ["product" => "Fresh Beef", "qty" => 2, "price" => 600],
-                ["product" => "Mango", "qty" => 1, "price" => 200]
-            ]
-        ],
-        [
-            "order_id" => "ORD002",
-            "customer_name" => "Buyer Two",
-            "status" => "Confirmed",
-            "items" => [
-                ["product" => "Gur", "qty" => 3, "price" => 150]
-            ]
-        ]
-    ];
+   
+    $sellerId = $_SESSION['user_id'] ?? null;
+    if (!$sellerId) {
+        $_SESSION['user_id'] = "FARMER001";
+        $sellerId = $_SESSION['user_id'];
+    }
+
+    $orders = Inventory::getSellerOrdersForView($sellerId);
 
     return ["orders" => $orders];
 }
+
 
 
 

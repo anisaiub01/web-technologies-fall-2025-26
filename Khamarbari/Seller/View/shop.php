@@ -21,7 +21,7 @@
     <div class="card">
         <img src="<?php echo $p['image']; ?>">
         <h3><?php echo $p['name']; ?></h3>
-
+        
         <form method="post">
             <input type="hidden" name="name" value="<?php echo $p['name']; ?>">
             <input type="hidden" name="image" value="<?php echo $p['image']; ?>">
@@ -47,8 +47,11 @@
         <div class="inv-item">
     <img src="<?php echo $i['image']; ?>">
     <p><?php echo $i['name']; ?></p>
+    <p>৳ <?php echo $i['price']; ?></p>
+    <p>Qty: <?php echo $i['stock']; ?></p>
 
-    <!-- UPDATE -->
+
+   
     <form method="post" action="<?php echo BASE_URL; ?>/main.php?page=updateProduct">
         <input type="hidden" name="product_id" value="<?php echo $i['product_id']; ?>">
 
@@ -58,7 +61,7 @@
         <button type="submit">Update</button>
     </form>
 
-    <!-- DELETE -->
+   
     <form method="post"
           action="<?php echo BASE_URL; ?>/main.php?page=deleteProduct"
           onsubmit="return confirm('Delete this product?');">

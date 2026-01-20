@@ -33,8 +33,11 @@ $orders = $data['orders'] ?? [];
                 </p>
             <?php endforeach; ?>
 
-            <?php if ($o['status'] === 'Pending'): ?>
-                <form method="post" action="seller/orderAction">
+            <?php if (strtolower($o['status']) === 'pending'): ?>
+
+                <form method="post" action="<?php echo BASE_URL; ?>/main.php?page=orderAction">
+
+           
                     <input type="hidden" name="order_id" value="<?php echo $o['id']; ?>">
 
                     <button name="action" value="accept">Accept</button>
