@@ -7,6 +7,7 @@ require_once __DIR__ . "/../Model/ProductModel.php";
 require_once __DIR__ . "/../Model/OrderModel.php";
 require_once __DIR__ . "/../Model/PaymentModel.php";
 require_once __DIR__ . "/../Model/ReviewModel.php";
+require_once __DIR__ . "/../Model/ContactModel.php";
 
 
 
@@ -18,6 +19,7 @@ class AdminController {
     private $orderModel;
     private $paymentModel;
     private $reviewModel;
+    private $contactModel;
  
 
     public function __construct() {
@@ -29,6 +31,7 @@ class AdminController {
         $this->orderModel = new OrderModel($this->conn);
         $this->paymentModel = new PaymentModel($this->conn);
         $this->reviewModel = new ReviewModel($this->conn);
+        $this->contactModel = new ContactModel($this->conn);
    
     }
 
@@ -207,6 +210,15 @@ class AdminController {
             header("Location: admindashboard.php?section=reviews");
             exit;
         }
+              // --- Queries ---
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'respond_query') {
+            $queryId = $_POST['query_id'];
+            $response = $_POST['response'];
+            $status = $_POST['status'];
+            $this->contactModel->respondToQuery($queryId, $response, $status);
+            header("Location: admindashboard.php?section=queries");
+            exit;
+        }
      
         
     }
@@ -262,6 +274,12 @@ class AdminController {
                  case 'reviews':
                 $reviews = $this->reviewModel->getAllReviews();
                 include __DIR__ . "/../View/sections/reviews.php";
+                break;
+
+                case 'queries':
+                $status = $_GET['status'] ?? '';
+                $queries = $this->contactModel->getAllQueries($status);
+                include __DIR__ . "/../View/sections/queries.php";
                 break;
    
             default:
