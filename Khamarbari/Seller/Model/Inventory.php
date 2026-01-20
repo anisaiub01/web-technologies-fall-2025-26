@@ -7,6 +7,13 @@ class Inventory {
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $pdo;
     }
+    public static function getUserNameById($userId): string {
+    $db = self::db();
+    $stmt = $db->prepare("SELECT name FROM users WHERE user_id=? LIMIT 1");
+    $stmt->execute([$userId]);
+    return $stmt->fetchColumn() ?: "User";
+}
+
 
     
     public static function dbPublic() {

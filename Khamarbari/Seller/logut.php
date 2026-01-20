@@ -1,8 +1,9 @@
 <?php
 session_start();
-session_unset();
+
+$_SESSION = [];
+
 session_destroy();
 
-
-header("Location: /web-technologies-fall-2025-26/Khamarbari/Seller/main.php?page=shop");
+header("Location: main.php?page=shop");
 exit;

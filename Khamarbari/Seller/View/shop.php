@@ -10,10 +10,21 @@
 <body>
 
 <div class="topbar">
-    <h2 class="upper_db">Owner – Dashboard</h2>
-    <a class="orders-btn" href="<?php echo BASE_URL; ?>/main.php?page=order">Orders</a>
+    <div class="topbar-left">
+        <span class="welcome-text">
+            Welcome, <?php echo htmlspecialchars($data['userName'] ?? $_SESSION['user_id']); ?>
+        </span>
+    </div>
 
+    <h2 class="upper_db">Owner – Dashboard</h2>
+
+    <div class="topbar-right">
+        <a class="orders-btn" href="<?php echo BASE_URL; ?>/main.php?page=order">Orders</a>
+        <a class="orders-btn logout-btn" href="<?php echo BASE_URL; ?>/logout.php">Logout</a>
+    </div>
 </div>
+
+
 
 
 <div class="shop">

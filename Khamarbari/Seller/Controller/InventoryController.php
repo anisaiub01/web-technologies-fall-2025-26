@@ -39,6 +39,8 @@ class InventoryController {
         ];
 
         $farmerId = $this->getFarmerId();
+        $userName = Inventory::getUserNameById($farmerId);
+
 
         if (isset($_POST['add'])) {
             Inventory::addProduct(
@@ -57,8 +59,10 @@ class InventoryController {
 
         return [
             "catalog"   => $catalog,
-            "inventory" => $inventory
+            "inventory" => $inventory,
+            "userName"  => $userName
         ];
+
     }
 
     public function orderAction() {
