@@ -52,6 +52,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 
+       // --- Normal user login ---
+    $user = $model->findUserById($userId); // get user by ID
+    if ($user && password_verify($password, $user['password'])) {
+        $_SESSION['user_id']     = $user['user_id'];
+        $_SESSION['user_type']   = strtolower($user['user_type']);
+        $_SESSION['user_name']   = $user['name'];
+        $_SESSION['user_email']  = $user['email'];
+        $_SESSION['user_phone']  = $user['phone'];
+        $_SESSION['user_address']= $user['address'];
+        $_SESSION['user_nid']    = $user['nid'];
+        $_SESSION['login_time']  = time();
+
+        setcookie("logged_in", "1", time() + 3600, "/");
+
+        if ($_SESSION['user_type'] === "farmer") {
+            header("Location: ../../Seller/View/consumerdashboard.php");
+        } else {
+            header("Location: ../../Buyer/View/consumerdashboard.php");
+        }
+        exit;
+    }
+
     // --- Invalid credentials ---
     $_SESSION['login-error_message'] = "Invalid Log In, Please Enter Valid Credential";
     header("Location: ../View/login.php");
